@@ -63,12 +63,3 @@ jobs:
           GH_TOKEN: ${{ secrets.github_token }}
         run: npm run build
         shell: bash
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: launcher-${{ runner.os }}
-          path: |
-            dist/launcher.exe
-            dist/launcher.sh
-
