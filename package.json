@@ -1,7 +1,7 @@
 {
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Launcher Mincraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
@@ -12,7 +12,7 @@
     "url": "http://play.night-watch.fr",
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
-        "dev": "cross-env-shell DEV_TOOL=open nodemon --exec npm start",
+        "dev": "cross-env-shell DEV_TOOL=close nodemon --exec npm start",
         "build": "node build.js --obf=true --build=platform",
         "icon": "node build.js --icon=https://raw.githubusercontent.com/Walou41/Icone/refs/heads/main/Logo%20WC.png"
     },

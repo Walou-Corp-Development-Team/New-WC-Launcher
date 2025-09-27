@@ -14,14 +14,16 @@
 .status-server {
     position: relative;
     display: flex;
+    border: 2px solid var(--element-color);
+    box-shadow: 0px 0px 46px 10px var(--element-color);
     justify-content: space-between;
     align-items: center;
     background: var(--background);
     width: 25rem;
     height: 3rem;
     color: var(--color);
-    border-radius: 10px;
-    margin-top: 3rem;
+    border-radius: 30px;
+    margin-top: 1rem;
     padding: 1rem;
     text-align: center;
 }
@@ -48,7 +50,7 @@
     background: var(--shadow);
     min-width: 3rem;
     height: 3rem;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 .player-count {
@@ -94,26 +96,32 @@
 }
 
 .titre-tab-new {
-    margin-top: 1rem;
-    font-size: 2rem;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    background: var(--background-transparent);
+    font-size: 1.3rem;
+    padding: 0.5rem 3rem;
+    border-radius: 1.3rem;
+    background: var(--background);
+    border: 1px solid var(--element-color);
+    box-shadow: 0px 0px 46px 10px var(--element-color);
     color: var(--color);
+    margin-top: 8rem;
+    margin-bottom: 2rem;
 }
 
 .news-list {
     width: 90%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 30px;
+    background: var(--background-transparent);
     margin: 1rem 0;
 }
 
 .news-block {
     width: 100%;
     margin: 0 0 1rem 0;
-    border-radius: 10px;
-    background: var(--background-transparent);
+    border-radius: 30px;
+    border-bottom: 1px solid var(--element-color);
+    box-shadow: 0px 0px 46px 10px var(--element-color);
+    background: var(--background);
 }
 
 .news-header {
@@ -124,7 +132,6 @@
 }
 
 .header-text .title {
-    text-decoration: underline;
     text-underline-offset: 3px;
     font-size: 1.2rem;
     text-align: center;
@@ -139,7 +146,7 @@
 .news-content .bbWrapper {
     padding: 0 1.5rem;
     padding-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
 
 }
 
@@ -171,27 +178,34 @@
     bottom: 0;
     right: 0;
     width: 15%;
-    height: calc(80% - 1rem);
+    height: calc(70% - 1rem);
     justify-content: center;
     margin-bottom: 1rem;
 }
 
 .social-list {
-    border-radius: 10px;
+    border-radius: 30px;
     height: 100%;
 }
 
 .social-block {
     display: flex;
-    background: var(--background-transparent);
+    background: var(--background);
+    box-shadow: 0px 0px 46px 10px var(--element-color);
+    border: 2px solid var(--element-color);
     width: 90px;
     height: 90px;
     margin-bottom: 1rem;
-    border-radius: 10px;
+    border-radius: 30px;
     font-size: 2rem;
     cursor: pointer;
     align-items: center;
     justify-content: center;
+}
+
+.social-block:hover {
+    cursor: pointer;
+    background: var(--element-color);
 }
 
 .social-block .icon-social {
@@ -209,12 +223,16 @@
  ******************************************************************************/
 
 .sidebar {
+    margin: 2rem;
     display: flex;
     justify-content: space-between;
+    border: 2px solid var(--element-color);
+    box-shadow: 0px 0px 46px 10px var(--element-color);
+    border-radius: 30px;
     align-items: center;
-    width: 100%;
+    width: 90%;
     height: 90px;
-    background: var(--background-transparent);
+    background: var(--background);
 }
 
 .player-options {
@@ -254,10 +272,16 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
-    border: solid 3px var(--element-color);
-    border-radius: 15px;
+    box-shadow: 0px 0px 46px 10px var(--element-color);
+    border: solid 1px var(--element-color);
+    border-radius: 30px;
     height: 3.2rem;
     padding-right: 1.9rem;
+}
+
+.play-instance:hover {
+    cursor: pointer;
+    background: var(--element-color);
 }
 
 .play-btn {
@@ -320,6 +344,11 @@
     font-size: 3rem;
     color: var(--element-color);
     margin: 0 1.5rem;
+}
+
+.settings-btn:hover {
+    cursor: pointer;
+    color: var(--color);
 }
 
 .instance-popup {

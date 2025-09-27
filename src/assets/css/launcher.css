@@ -5,11 +5,12 @@
 @import 'panels/settings.css';
 
 body {
+    zoom: 80%;
     margin: 0;
     padding: 0;
     user-select: none;
     color: var(--color);
-    font-family: 'Poppins';
+    font-family: 'Quicksand';
     font-weight: bolder;
 }
 

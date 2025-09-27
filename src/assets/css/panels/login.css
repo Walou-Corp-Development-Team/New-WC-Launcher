@@ -9,7 +9,8 @@
     position: absolute;
     padding: 15px;
     background: var(--background);
-    border-radius: 15px;
+    box-shadow: 0px 0px 46px 10px var(--element-color);
+    border-radius: 30px;
     text-align: center;
     min-width: 40%;
 }
@@ -22,6 +23,7 @@
 }
 
 .login-text {
+    padding: 1rem;
     font-size: 1.3rem;
 }
 
@@ -29,12 +31,18 @@
 .cancel {
     background: none;
     color: var(--color);
-    border: solid 4px var(--element-color);
-    border-radius: 10px;
-    padding: 0.3rem 4rem;
+    border: solid 1px var(--element-color);
+    border-radius: 30px;
+    padding: 1rem 4rem;
     font-size: inherit;
     font-weight: bold;
-    margin: 15px 10px;
+    margin: 30px 10px;
+}
+
+.connect:hover,
+.cancel:hover {
+    cursor: pointer;
+    background: var(--element-color);
 }
 
 .input-login .email,
