@@ -79,6 +79,7 @@ class Index {
                 },
                 nodeGypRebuild: false,
                 npmRebuild: true,
+                publish: "always",
                 publish: [{
                     provider: "github",
                     releaseType: 'release',

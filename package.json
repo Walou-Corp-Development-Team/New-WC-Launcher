@@ -2,7 +2,7 @@
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
     "type": "commonjs",
-    "version": "v1.0.0",
+    "version": "1.0.1",
     "description": "Launcher Mincraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
