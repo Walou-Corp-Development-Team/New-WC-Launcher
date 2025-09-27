@@ -12,7 +12,7 @@
 
 <p align="center">
     <a href="https://discord.gg/4dEKWZb7Qz">
-        <img src="https://invidget.switchblade.xyz/e9q7Yr2cuQ">
+        <img src="https://image.noelshack.com/fichiers/2025/39/6/1758979802-discord-logo-png-pic.png">
     </a>
 </p>
 
