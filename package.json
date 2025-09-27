@@ -1,12 +1,11 @@
 {
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
-    "type": "commonjs",
     "version": "1.0.3",
     "description": "Launcher Mincraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
-        "name": "luuxis, Inc.",
+        "name": "luuxis, WalouCorp, Inc.",
         "email": "contact@luuxis.fr",
         "url": "https://github.com/luuxis"
     },
