@@ -32,7 +32,7 @@ class Splash {
         let splashes = [
             { "message": "Dommage...", "author": "Walou" },
             { "message": "Pierre Edouard ton goûter", "author": "Walou" },
-            { "message": "Quelqu'un à vue espace ?", "author": "Walou" }
+            { "message": "Quelqu'un à vu espace ?", "author": "Walou" }
         ];
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -54,7 +54,7 @@ class Splash {
         this.setStatus(`Recherche de mise à jour...`);
 
         ipcRenderer.invoke('update-app').then().catch(err => {
-            return this.shutdown(`erreur lors de la recherche de mise à jour :<br>${err.message}`);
+            return this.shutdown(`Erreur lors de la recherche de mise à jour :<br>${err.message}`);
         });
 
         ipcRenderer.on('updateAvailable', () => {
@@ -157,7 +157,7 @@ function sleep(ms) {
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+    if (e.ctrlKey && e.shiftKey && e.code == 73 || e.code == 123) {
         ipcRenderer.send("update-window-dev-tools");
     }
 })

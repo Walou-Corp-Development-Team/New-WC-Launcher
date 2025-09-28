@@ -33,7 +33,7 @@ class Launcher {
 
     initLog() {
         document.addEventListener('keydown', e => {
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+            if (e.ctrlKey && e.shiftKey && e.code == 73 || e.code == 123) {
                 ipcRenderer.send('main-window-dev-tools-close');
                 ipcRenderer.send('main-window-dev-tools');
             }
@@ -43,7 +43,7 @@ class Launcher {
 
     shortcut() {
         document.addEventListener('keydown', e => {
-            if (e.ctrlKey && e.keyCode == 87) {
+            if (e.ctrlKey && e.code == 87) {
                 ipcRenderer.send('main-window-close');
             }
         })
@@ -166,66 +166,8 @@ class Launcher {
                     await this.db.updateData('accounts', refresh_accounts, account_ID)
                     await addAccount(refresh_accounts)
                     if (account_ID == account_selected) accountSelect(refresh_accounts)
-                } else if (account.meta.type == 'AZauth') {
-                    console.log(`Account Type: ${account.meta.type} | Username: ${account.name}`);
-                    popupRefresh.openPopup({
-                        title: 'Connexion',
-                        content: `Refresh account Type: ${account.meta.type} | Username: ${account.name}`,
-                        color: 'var(--color)',
-                        background: false
-                    });
-                    let refresh_accounts = await new AZauth(this.config.online).verify(account);
-
-                    if (refresh_accounts.error) {
-                        this.db.deleteData('accounts', account_ID)
-                        if (account_ID == account_selected) {
-                            configClient.account_selected = null
-                            this.db.updateData('configClient', configClient)
-                        }
-                        console.error(`[Account] ${account.name}: ${refresh_accounts.message}`);
-                        continue;
-                    }
-
-                    refresh_accounts.ID = account_ID
-                    this.db.updateData('accounts', refresh_accounts, account_ID)
-                    await addAccount(refresh_accounts)
-                    if (account_ID == account_selected) accountSelect(refresh_accounts)
-                } else if (account.meta.type == 'Mojang') {
-                    console.log(`Account Type: ${account.meta.type} | Username: ${account.name}`);
-                    popupRefresh.openPopup({
-                        title: 'Connexion',
-                        content: `Refresh account Type: ${account.meta.type} | Username: ${account.name}`,
-                        color: 'var(--color)',
-                        background: false
-                    });
-                    if (account.meta.online == false) {
-                        let refresh_accounts = await Mojang.login(account.name);
-
-                        refresh_accounts.ID = account_ID
-                        await addAccount(refresh_accounts)
-                        this.db.updateData('accounts', refresh_accounts, account_ID)
-                        if (account_ID == account_selected) accountSelect(refresh_accounts)
-                        continue;
-                    }
-
-                    let refresh_accounts = await Mojang.refresh(account);
-
-                    if (refresh_accounts.error) {
-                        this.db.deleteData('accounts', account_ID)
-                        if (account_ID == account_selected) {
-                            configClient.account_selected = null
-                            this.db.updateData('configClient', configClient)
-                        }
-                        console.error(`[Account] ${account.name}: ${refresh_accounts.errorMessage}`);
-                        continue;
-                    }
-
-                    refresh_accounts.ID = account_ID
-                    this.db.updateData('accounts', refresh_accounts, account_ID)
-                    await addAccount(refresh_accounts)
-                    if (account_ID == account_selected) accountSelect(refresh_accounts)
                 } else {
-                    console.error(`[Account] ${account.name}: Account Type Not Found`);
+                    console.error(`[Account] ${account.name}: Account Type Not Found (Flagged as Crack Player)`);
                     this.db.deleteData('accounts', account_ID)
                     if (account_ID == account_selected) {
                         configClient.account_selected = null
