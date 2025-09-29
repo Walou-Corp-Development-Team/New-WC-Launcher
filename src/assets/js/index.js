@@ -1,6 +1,7 @@
+
 /**
- * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
+ * Launcher Splash Screen with Admin Bypass
+ * Author: Luuxis (modifié)
  */
 
  const { ipcRenderer, shell } = require('electron');
@@ -9,7 +10,7 @@
  import { config, database } from './utils.js';
  const nodeFetch = require("node-fetch");
  
- let adminBypass = false; // ✅ Flag pour bypass maintenance
+ let adminBypass = false;
  
  class Splash {
      constructor() {
@@ -66,21 +67,23 @@
                  ipcRenderer.send('start-update');
              }
              else return this.dowloadUpdate();
-         })
+         });
  
          ipcRenderer.on('error', (event, err) => {
              if (err) return this.shutdown(`${err.message}`);
-         })
+         });
  
          ipcRenderer.on('download-progress', (event, progress) => {
              ipcRenderer.send('update-window-progress', { progress: progress.transferred, size: progress.total })
              this.setProgress(progress.transferred, progress.total);
-         })
+         });
  
-         ipcRenderer.on('update-not-available', () => {
+         ipcRenderer.on('update-not-available', async () => {
              console.error("Mise à jour non disponible");
+             this.setStatus("Appuyez sur Ctrl + Alt + M pour bypass admin (5s)");
+             await sleep(5000);
              this.maintenanceCheck();
-         })
+         });
      }
  
      getLatestReleaseForOS(os, preferredFormat, asset) {
@@ -122,7 +125,7 @@
          }).catch(e => {
              console.error(e);
              return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
-         })
+         });
      }
  
      startLauncher() {
@@ -148,7 +151,7 @@
          if (this.progress.classList.toggle("show")) this.setProgress(0, 1);
      }
  
-    Progress(value, max) {
+     setProgress(value, max) {
          this.progress.value = value;
          this.progress.max = max;
      }
@@ -158,14 +161,11 @@
      return new Promise(r => setTimeout(r, ms));
  }
  
- // ✅ Ajout des raccourcis clavier
  document.addEventListener("keydown", (e) => {
-     // Dev tools
      if ((e.ctrlKey && e.shiftKey && e.code === "KeyI") || e.code === "F12") {
          ipcRenderer.send("update-window-dev-tools");
      }
  
-     // Admin bypass
      if (e.ctrlKey && e.altKey && e.code === "KeyM") {
          adminBypass = true;
          console.log("Admin bypass activé");
