@@ -17,6 +17,7 @@ class Splash {
         this.splashAuthor = document.querySelector(".splash-author");
         this.message = document.querySelector(".message");
         this.progress = document.querySelector(".progress");
+        this.bypassMaintenance = false;
         document.addEventListener('DOMContentLoaded', async () => {
             let databaseLauncher = new database();
             let configClient = await databaseLauncher.readData('configClient');
@@ -115,13 +116,15 @@ class Splash {
 
     async maintenanceCheck() {
         config.GetConfig().then(res => {
-            if (res.maintenance) return this.shutdown(res.maintenance_message);
+            if (res.maintenance && !this.bypassMaintenance) 
+                return this.shutdown(res.maintenance_message);
             this.startLauncher();
         }).catch(e => {
             console.error(e);
             return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
         })
     }
+    
 
     startLauncher() {
         this.setStatus(`Démarrage du launcher`);
@@ -157,8 +160,18 @@ function sleep(ms) {
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.code == 73 || e.code == 123) {
+    // Dev tools
+    if (e.ctrlKey && e.shiftKey && e.code == "KeyI" || e.code == "F12") {
         ipcRenderer.send("update-window-dev-tools");
+    }
+
+    // Bypass maintenance : Ctrl + Shift + M
+    if (e.ctrlKey && e.shiftKey && e.code == "KeyM") {
+        const splashInstance = window.splashInstance; // on devra l'exposer
+        if (splashInstance) {
+            splashInstance.bypassMaintenance = true;
+            splashInstance.setStatus("Bypass maintenance activé !");
+        }
     }
 })
 new Splash();
