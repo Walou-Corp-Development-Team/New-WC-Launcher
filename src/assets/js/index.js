@@ -133,11 +133,19 @@ class Splash {
     }
 
     shutdown(text) {
+        if (this.bypassMaintenance) {
+            this.setStatus(`Bypass maintenance actif, lancement du launcher...`);
+            return this.startLauncher();
+        }
+    
         this.setStatus(`${text}<br>Arrêt dans 5s`);
         let i = 4;
-        setInterval(() => {
+        const interval = setInterval(() => {
             this.setStatus(`${text}<br>Arrêt dans ${i--}s`);
-            if (i < 0) ipcRenderer.send('update-window-close');
+            if (i < 0) {
+                clearInterval(interval);
+                ipcRenderer.send('update-window-close');
+            }
         }, 1000);
     }
 
