@@ -8,6 +8,7 @@ const pkg = require('../package.json');
 const os = require('os');
 import { config, database } from './utils.js';
 const nodeFetch = require("node-fetch");
+window.BYPASS_MAINTENANCE = false;
 
 
 class Splash {
@@ -116,8 +117,9 @@ class Splash {
 
     async maintenanceCheck() {
         config.GetConfig().then(res => {
-            if (res.maintenance && !this.bypassMaintenance) 
+            if (res.maintenance && !window.BYPASS_MAINTENANCE) {
                 return this.shutdown(res.maintenance_message);
+            }
             this.startLauncher();
         }).catch(e => {
             console.error(e);
@@ -168,18 +170,12 @@ function sleep(ms) {
 }
 
 document.addEventListener("keydown", (e) => {
-    // Dev tools
-    if (e.ctrlKey && e.shiftKey && e.code == "KeyI" || e.code == "F12") {
-        ipcRenderer.send("update-window-dev-tools");
-    }
-
     // Bypass maintenance : Ctrl + Shift + M
-    if (e.ctrlKey && e.shiftKey && e.code == "KeyM") {
-        const splashInstance = window.splashInstance; // on devra l'exposer
-        if (splashInstance) {
-            splashInstance.bypassMaintenance = true;
-            splashInstance.setStatus("Bypass maintenance activé !");
-        }
+    if (e.ctrlKey && e.shiftKey && e.code === "KeyM") {
+        window.BYPASS_MAINTENANCE = true;
+        console.log("Bypass maintenance activé !");
+        const messageEl = document.querySelector(".message");
+        if (messageEl) messageEl.innerHTML = "Bypass maintenance activé !";
     }
-})
+});
 new Splash();
