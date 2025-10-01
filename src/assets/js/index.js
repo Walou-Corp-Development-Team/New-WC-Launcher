@@ -13,41 +13,57 @@
  window.BYPASS_MAINTENANCE = false;
  
  /**
-  * Listener clavier enregistré tôt : il active le flag global.
-  * Ctrl+Shift+M => active le bypass (ne lance pas automatiquement si aucune instance)
+  * On enregistre un listener qui attend DOMContentLoaded puis attache un listener
+  * keydown sur `window`. Ça garantit que les touches sont bien captées par Electron
+  * (même si des éléments ont le focus).
   */
- document.addEventListener("keydown", (e) => {
-     if (e.ctrlKey && e.shiftKey && e.code === "KeyM") {
-         window.BYPASS_MAINTENANCE = true;
-         console.log("Bypass maintenance global activé !");
-         const messageEl = document.querySelector?.(".message");
-         if (messageEl) messageEl.innerHTML = "Bypass maintenance activé ! (Ctrl+Shift+M)";
+ window.addEventListener('DOMContentLoaded', () => {
+     window.addEventListener("keydown", (e) => {
+         try {
+             // Ctrl + Shift + M => activer le bypass
+             if (e.ctrlKey && e.shiftKey && e.code === "KeyM") {
+                 console.log("[Splash] Raccourci clavier détecté : Ctrl+Shift+M");
+                 window.BYPASS_MAINTENANCE = true;
  
-         // Si l'instance existe, on met à jour son flag local et on agit selon l'état courant.
-         if (window.splashInstance) {
-             window.splashInstance.bypassMaintenance = true;
-             // Si la maintenance est affichée (ou si on veut forcer), on peut démarrer le launcher.
-             // Ici on ne lance automatiquement que si la page est en état "display" (optionnel),
-             // mais on peut aussi forcer tout le temps.
-             console.log("Splash instance détectée — tentative de démarrage si maintenance active.");
-             // Si la maintenance est en cours (message affiché contenant "maintenance"), on force le démarrage,
-             // sinon on laisse maintenanceCheck décider lors de sa prochaine exécution.
-             // Pour être sûr, on vérifie si la config a déjà été récupérée (éventuellement stockée sur l'instance).
-             try {
-                 // Appel sécurisé pour démarrer si le launcher n'est pas déjà lancé
-                 window.splashInstance.startLauncher();
-             } catch (err) {
-                 console.error("Erreur en tentant de lancer le launcher depuis le listener clavier :", err);
+                 const splashInstance = window.splashInstance;
+                 if (splashInstance) {
+                     splashInstance.bypassMaintenance = true;
+                     splashInstance.setStatus("Bypass maintenance activé !");
+ 
+                     // Si on est en phase de maintenance affichée, on force le démarrage
+                     if (splashInstance.sawMaintenance) {
+                         console.log("[Splash] Maintenance en cours mais bypass activé -> démarrage");
+                         splashInstance.startLauncher();
+                     } else {
+                         // Sinon on laisse maintenanceCheck() décider quand il se déclenchera
+                         console.log("[Splash] Bypass activé. Si une maintenance est détectée, le launcher démarrera automatiquement.");
+                     }
+                 } else {
+                     console.log("[Splash] Bypass activé globalement, instance non encore créée.");
+                 }
+ 
+                 // Optionnel : empêcher comportement par défaut
+                 e.preventDefault();
+                 e.stopPropagation();
              }
+ 
+             // Raccourci devtools (garde ton ancien raccourci aussi)
+             if ((e.ctrlKey && e.shiftKey && e.code === "KeyI") || e.code === "F12") {
+                 ipcRenderer.send("update-window-dev-tools");
+             }
+         } catch (err) {
+             console.error("[Splash] Erreur dans le listener clavier :", err);
          }
-     }
+     });
  });
  
  
  class Splash {
      constructor() {
-         // Flag local (miroir du global)
-         this.bypassMaintenance = false;
+         // Flags
+         this.bypassMaintenance = !!window.BYPASS_MAINTENANCE; // miroir local du global
+         this.sawMaintenance = false; // vrai si maintenance détectée et affichée
+         this.started = false; // pour éviter double démarrage
  
          this.splash = document.querySelector(".splash");
          this.splashMessage = document.querySelector(".splash-message");
@@ -55,17 +71,23 @@
          this.message = document.querySelector(".message");
          this.progress = document.querySelector(".progress");
  
-         // Expose l'instance globalement pour que le listener clavier puisse y accéder
+         // Expose l'instance globalement pour le listener clavier
          window.splashInstance = this;
  
          document.addEventListener('DOMContentLoaded', async () => {
-             let databaseLauncher = new database();
-             let configClient = await databaseLauncher.readData('configClient');
-             let theme = configClient?.launcher_config?.theme || "auto"
-             let isDarkTheme = await ipcRenderer.invoke('is-dark-theme', theme).then(res => res)
-             document.body.className = isDarkTheme ? 'dark global' : 'light global';
-             if (process.platform == 'win32') ipcRenderer.send('update-window-progress-load')
-             this.startAnimation()
+             try {
+                 let databaseLauncher = new database();
+                 let configClient = await databaseLauncher.readData('configClient');
+                 let theme = configClient?.launcher_config?.theme || "auto";
+                 let isDarkTheme = await ipcRenderer.invoke('is-dark-theme', theme).then(res => res);
+                 document.body.className = isDarkTheme ? 'dark global' : 'light global';
+                 if (process.platform == 'win32') ipcRenderer.send('update-window-progress-load');
+                 this.startAnimation();
+             } catch (err) {
+                 console.error("[Splash] Erreur lors du DOMContentLoaded dans le constructeur :", err);
+                 // fallback : lancer l'animation quand même
+                 this.startAnimation();
+             }
          });
      }
  
@@ -95,9 +117,19 @@
      async checkUpdate() {
          this.setStatus(`Recherche de mise à jour...`);
  
-         ipcRenderer.invoke('update-app').then().catch(err => {
-             return this.shutdown(`Erreur lors de la recherche de mise à jour :<br>${err.message}`);
-         });
+         try {
+             await ipcRenderer.invoke('update-app');
+         } catch (err) {
+             // Si update-app rejette, on affiche l'erreur et on shutdown
+             return this.shutdown(`Erreur lors de la recherche de mise à jour :<br>${err?.message || err}`);
+         }
+ 
+         // Les handlers IPC sont attachés une seule fois. On nettoie d'abord au cas où.
+         // (si ton code principal attache ces events ailleurs, adapte selon)
+         ipcRenderer.removeAllListeners('updateAvailable');
+         ipcRenderer.removeAllListeners('error');
+         ipcRenderer.removeAllListeners('download-progress');
+         ipcRenderer.removeAllListeners('update-not-available');
  
          ipcRenderer.on('updateAvailable', () => {
              this.setStatus(`Mise à jour disponible !`);
@@ -105,22 +137,22 @@
                  this.toggleProgress();
                  ipcRenderer.send('start-update');
              }
-             else return this.dowloadUpdate();
-         })
+             else this.dowloadUpdate();
+         });
  
          ipcRenderer.on('error', (event, err) => {
-             if (err) return this.shutdown(`${err.message}`);
-         })
+             if (err) this.shutdown(`${err.message || err}`);
+         });
  
          ipcRenderer.on('download-progress', (event, progress) => {
-             ipcRenderer.send('update-window-progress', { progress: progress.transferred, size: progress.total })
+             ipcRenderer.send('update-window-progress', { progress: progress.transferred, size: progress.total });
              this.setProgress(progress.transferred, progress.total);
-         })
+         });
  
          ipcRenderer.on('update-not-available', () => {
-             console.error("Mise à jour non disponible");
+             console.log("[Splash] Mise à jour non disponible");
              this.maintenanceCheck();
-         })
+         });
      }
  
      getLatestReleaseForOS(osStr, preferredFormat, asset) {
@@ -158,54 +190,61 @@
                  });
              }
          } catch (err) {
-             console.error("Erreur dowloadUpdate:", err);
+             console.error("[Splash] Erreur dowloadUpdate:", err);
              this.setStatus("Erreur lors de la vérification des releases.");
          }
      }
- 
  
      async maintenanceCheck() {
          // récupère config et décide si on lance le launcher
          try {
              const res = await config.GetConfig();
  
-             // met à jour le flag local depuis le global
+             // synchronise le flag local depuis le global
              this.bypassMaintenance = !!window.BYPASS_MAINTENANCE;
  
-             if (res.maintenance) {
-                 // Si maintenance active et bypass non activé -> shutdown (comportement normal)
+             if (res && res.maintenance) {
+                 // On marque qu'une maintenance a été vue (utile si user active le bypass ensuite)
+                 this.sawMaintenance = true;
+ 
                  if (!this.bypassMaintenance) {
+                     // Affiche le message et shutdown si pas de bypass
                      this.setStatus(res.maintenance_message + "<br>Appuyez sur Ctrl+Shift+M pour bypass");
                      return this.shutdown(res.maintenance_message);
                  } else {
-                     // Bypass activé -> on démarre le launcher
+                     // Bypass activé -> démarrage
                      this.setStatus("Maintenance détectée, mais bypass activé — Démarrage...");
                      return this.startLauncher();
                  }
              } else {
                  // Pas de maintenance -> démarrage normal
+                 this.sawMaintenance = false;
                  return this.startLauncher();
              }
          } catch (e) {
-             console.error(e);
+             console.error("[Splash] Erreur maintenanceCheck:", e);
              return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
          }
      }
-     
  
      startLauncher() {
+         if (this.started) {
+             console.log("[Splash] startLauncher appelé mais déjà démarré.");
+             return;
+         }
+         this.started = true;
          this.setStatus(`Démarrage du launcher`);
          ipcRenderer.send('main-window-open');
          ipcRenderer.send('update-window-close');
      }
  
      shutdown(text) {
-         // Si le flag local est true, on bypass le shutdown
+         // Si bypass activé, on force le démarrage au lieu d'arrêter
          if (this.bypassMaintenance || window.BYPASS_MAINTENANCE) {
              this.setStatus(`Bypass maintenance actif, lancement du launcher...`);
              return this.startLauncher();
          }
-     
+ 
          this.setStatus(`${text}<br>Arrêt dans 5s`);
          let i = 4;
          const interval = setInterval(() => {
@@ -237,6 +276,6 @@
      return new Promise(r => setTimeout(r, ms));
  }
  
- // Instance créée à la fin
+ // Crée l'instance (exposée globalement dans le constructeur)
  new Splash();
  
