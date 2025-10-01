@@ -115,45 +115,45 @@
      }
  
      async checkUpdate() {
-         this.setStatus(`Recherche de mise à jour...`);
- 
-         try {
-             await ipcRenderer.invoke('update-app');
-         } catch (err) {
-             // Si update-app rejette, on affiche l'erreur et on shutdown
-             return this.shutdown(`Erreur lors de la recherche de mise à jour :<br>${err?.message || err}`);
-         }
- 
-         // Les handlers IPC sont attachés une seule fois. On nettoie d'abord au cas où.
-         // (si ton code principal attache ces events ailleurs, adapte selon)
-         ipcRenderer.removeAllListeners('updateAvailable');
-         ipcRenderer.removeAllListeners('error');
-         ipcRenderer.removeAllListeners('download-progress');
-         ipcRenderer.removeAllListeners('update-not-available');
- 
-         ipcRenderer.on('updateAvailable', () => {
-             this.setStatus(`Mise à jour disponible !`);
-             if (os.platform() == 'win32') {
-                 this.toggleProgress();
-                 ipcRenderer.send('start-update');
-             }
-             else this.dowloadUpdate();
-         });
- 
-         ipcRenderer.on('error', (event, err) => {
-             if (err) this.shutdown(`${err.message || err}`);
-         });
- 
-         ipcRenderer.on('download-progress', (event, progress) => {
-             ipcRenderer.send('update-window-progress', { progress: progress.transferred, size: progress.total });
-             this.setProgress(progress.transferred, progress.total);
-         });
- 
-         ipcRenderer.on('update-not-available', () => {
-             console.log("[Splash] Mise à jour non disponible");
-             this.maintenanceCheck();
-         });
-     }
+        this.setStatus(`Recherche de mise à jour...`);
+    
+        // On ne bloque pas avec await ici
+        ipcRenderer.invoke('update-app')
+            .catch(err => {
+                // Si erreur de communication, on affiche et on continue vers maintenance
+                console.warn("[Splash] update-app invoke erreur :", err);
+            });
+    
+        // Supprime les listeners existants pour éviter les doublons
+        ipcRenderer.removeAllListeners('updateAvailable');
+        ipcRenderer.removeAllListeners('error');
+        ipcRenderer.removeAllListeners('download-progress');
+        ipcRenderer.removeAllListeners('update-not-available');
+    
+        ipcRenderer.on('updateAvailable', () => {
+            this.setStatus(`Mise à jour disponible !`);
+            if (os.platform() === 'win32') {
+                this.toggleProgress();
+                ipcRenderer.send('start-update');
+            } else {
+                this.dowloadUpdate();
+            }
+        });
+    
+        ipcRenderer.on('error', (event, err) => {
+            if (err) this.shutdown(`${err.message || err}`);
+        });
+    
+        ipcRenderer.on('download-progress', (event, progress) => {
+            ipcRenderer.send('update-window-progress', { progress: progress.transferred, size: progress.total });
+            this.setProgress(progress.transferred, progress.total);
+        });
+    
+        ipcRenderer.on('update-not-available', () => {
+            console.log("[Splash] Mise à jour non disponible");
+            this.maintenanceCheck();
+        });
+    }
  
      getLatestReleaseForOS(osStr, preferredFormat, asset) {
          return asset.filter(asset => {
