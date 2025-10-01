@@ -116,15 +116,19 @@ class Splash {
 
 
     async maintenanceCheck() {
-        config.GetConfig().then(res => {
-            if (res.maintenance && !window.BYPASS_MAINTENANCE) {
-                return this.shutdown(res.maintenance_message);
+        // Vérification normalement ici, mais on ne bloque plus le lancement
+        try {
+            const res = await config.GetConfig();
+            // Si maintenance mais bypass pas encore activé, afficher message
+            if (res.maintenance) {
+                this.setStatus(res.maintenance_message + "<br>Appuyez sur Ctrl+Shift+M pour bypass");
             }
+            // Lancement automatique
             this.startLauncher();
-        }).catch(e => {
+        } catch (e) {
             console.error(e);
-            return this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
-        })
+            this.shutdown("Aucune connexion internet détectée,<br>veuillez réessayer ultérieurement.");
+        }
     }
     
 
@@ -170,12 +174,16 @@ function sleep(ms) {
 }
 
 document.addEventListener("keydown", (e) => {
-    // Bypass maintenance : Ctrl + Shift + M
+    // Ctrl + Shift + M pour bypass maintenance
     if (e.ctrlKey && e.shiftKey && e.code === "KeyM") {
-        window.BYPASS_MAINTENANCE = true;
         console.log("Bypass maintenance activé !");
         const messageEl = document.querySelector(".message");
-        if (messageEl) messageEl.innerHTML = "Bypass maintenance activé !";
+        if (messageEl) messageEl.innerHTML = "Bypass maintenance activé ! Lancement immédiat...";
+        
+        // Lance le launcher immédiatement
+        if (window.splashInstance) {
+            window.splashInstance.startLauncher();
+        }
     }
 });
 new Splash();
