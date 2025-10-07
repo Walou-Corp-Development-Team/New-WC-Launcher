@@ -1,7 +1,7 @@
 {
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
-    "version": "1.0.26",
+    "version": "1.0.27",
     "description": "Launcher Mincraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "electron-updater": "^6.6.2",
-        "minecraft-java-core": "^4.1.7",
+        "minecraft-java-core": "^4.2.1",
         "node-bdd": "^2.0.4",
         "node-fetch": "^2.7.0",
         "xml-js": "^1.6.11"
