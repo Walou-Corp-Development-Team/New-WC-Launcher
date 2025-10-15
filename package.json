@@ -1,7 +1,7 @@
 {
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
-    "version": "1.0.33",
+    "version": "1.0.29",
     "description": "Launcher Mincraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
@@ -29,10 +29,10 @@
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
-        "cross-env": "^10.1.0",
-        "electron": "^38.3.0",
+        "cross-env": "^10.0.0",
+        "electron": "^38.2.0",
         "electron-builder": "^26.0.12",
-        "javascript-obfuscator": "^0.6.2",
+        "javascript-obfuscator": "^4.1.1",
         "jimp": "^1.6.0",
         "nodemon": "^3.1.10",
         "png2icons": "^2.0.1"

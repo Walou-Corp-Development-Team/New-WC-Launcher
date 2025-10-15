@@ -60,13 +60,9 @@ ipcMain.on('main-window-maximize', () => {
 ipcMain.on('main-window-hide', () => MainWindow.getWindow().hide())
 ipcMain.on('main-window-show', () => MainWindow.getWindow().show())
 
-ipcMain.handle('Microsoft-window', async function (_, client_id) {
-    try {
-        return await new Microsoft(client_id).getAuth();
-    } catch (err) {
-        console.error("Microsoft API Error:", err);
-    }
-});
+ipcMain.handle('Microsoft-window', async (_, client_id) => {
+    return await new Microsoft(client_id).getAuth();
+})
 
 ipcMain.handle('is-dark-theme', (_, theme) => {
     if (theme === 'dark') return true
