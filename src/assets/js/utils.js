@@ -61,7 +61,7 @@ async function addAccount(data) {
             <div class="profile-pseudo">${data.name}</div>
             <div class="profile-uuid">${data.uuid}</div>
         </div>
-        <div class="delete-profile" id="${data.ID}">
+        <div class="delete-profile" title="Supprimer le compte Microsoft" id="${data.ID}">
             <div class="icon-account-delete delete-profile-icon"></div>
         </div>
     `
