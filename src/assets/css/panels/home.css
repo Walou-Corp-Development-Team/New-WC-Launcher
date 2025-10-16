@@ -18,7 +18,7 @@
     box-shadow: 0px 0px 46px 10px var(--element-color);
     justify-content: space-between;
     align-items: center;
-    background: var(--background);
+    background: var(--background-transparent);
     width: 25rem;
     height: 3rem;
     color: var(--color);
@@ -96,10 +96,10 @@
 }
 
 .titre-tab-new {
-    font-size: 1.3rem;
+    font-size: 2rem;
     padding: 0.5rem 3rem;
     border-radius: 1.3rem;
-    background: var(--background);
+    background: var(--background-transparent);
     border: 1px solid var(--element-color);
     box-shadow: 0px 0px 46px 10px var(--element-color);
     color: var(--color);
@@ -121,7 +121,7 @@
     border-radius: 30px;
     border-bottom: 1px solid var(--element-color);
     box-shadow: 0px 0px 46px 10px var(--element-color);
-    background: var(--background);
+    background: var(--background-transparent);
 }
 
 .news-header {
@@ -133,7 +133,7 @@
 
 .header-text .title {
     text-underline-offset: 3px;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-align: center;
 }
 
@@ -146,7 +146,7 @@
 .news-content .bbWrapper {
     padding: 0 1.5rem;
     padding-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1.3rem;
 
 }
 
@@ -224,6 +224,7 @@
 
 .sidebar {
     margin: 2rem;
+    padding: 0.5rem;
     display: flex;
     justify-content: space-between;
     border: 2px solid var(--element-color);
@@ -232,7 +233,7 @@
     align-items: center;
     width: 90%;
     height: 90px;
-    background: var(--background);
+    background: var(--background-transparent);
 }
 
 .player-options {

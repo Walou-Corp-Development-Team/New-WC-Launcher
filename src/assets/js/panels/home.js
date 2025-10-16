@@ -20,7 +20,7 @@ class Home {
  
      async news() {
          let newsElement = document.querySelector('.news-list');
-         let news = await config.getNews().then(res => res).catch(err => false);
+         let news = await config.getNews().then(res => res).catch(err => err);
  
          if (news) {
              if (!news.length) {

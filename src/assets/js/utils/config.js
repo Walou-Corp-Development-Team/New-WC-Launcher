@@ -4,7 +4,6 @@
  */
 
 const pkg = require('../package.json');
-const fetch = require("node-fetch");
 const convert = require('xml-js');
 let url = pkg.user ? `${pkg.url}/${pkg.user}` : pkg.url
 
