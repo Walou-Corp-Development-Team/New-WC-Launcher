@@ -1,7 +1,7 @@
 {
     "name": "wc_launcher_new",
     "preductname": "WalouCorp Launcher",
-    "version": "1.0.30",
+    "version": "1.0.31",
     "description": "Launcher Minecraft de la Walou Corp",
     "main": "src/app.js",
     "author": {
