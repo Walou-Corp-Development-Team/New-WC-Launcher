@@ -1,6 +1,6 @@
 /**
  * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
 const { ipcRenderer } = require('electron')
@@ -36,13 +36,28 @@ async function setBackground(theme) {
     }
     body.style.backgroundImage = background ? background : theme ? '#000' : '#fff';
     body.style.backgroundSize = 'cover';
+    body.style.backgroundRepeat = 'no-repeat'
 }
 
 async function changePanel(id) {
     let panel = document.querySelector(`.${id}`);
-    let active = document.querySelector(`.active`)
-    if (active) active.classList.toggle("active");
+    let active = document.querySelector(`.active`);
+
+    if (active && active !== panel) {
+        active.querySelector('.container').style.opacity = 0;
+        active.querySelector('.container').style.transform = "scale(0.95)";
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        active.classList.remove("active");
+        active.querySelector('.container').style.visibility = "hidden";
+    }
+
     panel.classList.add("active");
+    panel.querySelector('.container').style.visibility = "visible";
+    panel.querySelector('.container').style.opacity = 1;
+    setTimeout(() => {
+        panel.querySelector('.container').style.transform = "scale(1)";
+    }, 100);
 }
 
 async function appdata() {
@@ -50,6 +65,12 @@ async function appdata() {
 }
 
 async function addAccount(data) {
+    // Vérifier si le compte est déjà affiché dans la liste
+    let existingElement = document.getElementById(data.ID);
+    if(existingElement) {
+        return existingElement; // Le compte est déjà affiché
+    }
+    
     let skin = false
     if (data?.profile?.skins[0]?.base64) skin = await new skin2D().creatHeadTexture(data.profile.skins[0].base64);
     let div = document.createElement("div");
@@ -74,7 +95,7 @@ async function accountSelect(data) {
 
     if (activeAccount) activeAccount.classList.toggle('account-select');
     account.classList.add('account-select');
-    if (data?.profile?.skins[0]?.base64) headplayer(data.profile.skins[0].base64);
+    if (data?.profile?.skins[0]?.base64) await headplayer(data.profile.skins[0].base64);
 }
 
 async function headplayer(skinBase64) {
@@ -83,36 +104,69 @@ async function headplayer(skinBase64) {
 }
 
 async function setStatus(opt) {
-    let nameServerElement = document.querySelector('.server-status-name')
-    let statusServerElement = document.querySelector('.server-status-text')
-    let playersOnline = document.querySelector('.status-player-count .player-count')
+    let nameServerElement = document.querySelector('.server-status-name');
+    let statusServerElement = document.querySelector('.server-status-text');
+    let playersOnline = document.querySelector('.status-player-count .player-count');
+    console.log('Initializing server status... (refresh every 15sec)')
 
-    if (!opt) {
-        statusServerElement.classList.add('red')
-        statusServerElement.innerHTML = `Ferme - 0 ms`
-        document.querySelector('.status-player-count').classList.add('red')
-        playersOnline.innerHTML = '0'
-        return
+    async function updateStatus() {
+        if(!opt) {
+            statusServerElement.innerHTML = `Hors ligne - 0 ms`;
+            playersOnline.innerHTML = '0';
+            return;
+        }
+
+        let { ip, port, nameServer } = opt;
+        nameServerElement.innerHTML = nameServer;
+        let status = new Status(ip, port);
+        let statusServer = await status.getStatus().then(res => res).catch(err => err);
+
+        if(!statusServer.error) {
+            statusServerElement.classList.remove('red');
+            statusServerElement.classList.add('green');
+            document.querySelector('.status-player-count').classList.remove('red');
+            document.querySelector('.status-player-count').classList.add('green');
+            statusServerElement.innerHTML = `En ligne - ${statusServer.ms} ms`;
+            playersOnline.innerHTML = statusServer.playersConnect;
+        } else {
+            statusServerElement.innerHTML = `Hors ligne - 0 ms`;
+            playersOnline.innerHTML = '0';
+        }
     }
+    await updateStatus();
 
-    let { ip, port, nameServer } = opt
-    nameServerElement.innerHTML = nameServer
-    let status = new Status(ip, port);
-    let statusServer = await status.getStatus().then(res => res).catch(err => err);
-
-    if (!statusServer.error) {
-        statusServerElement.classList.remove('red')
-        document.querySelector('.status-player-count').classList.remove('red')
-        statusServerElement.innerHTML = `En ligne - ${statusServer.ms} ms`
-        playersOnline.innerHTML = statusServer.playersConnect
-    } else {
-        statusServerElement.classList.add('red')
-        statusServerElement.innerHTML = `Ferme - 0 ms`
-        document.querySelector('.status-player-count').classList.add('red')
-        playersOnline.innerHTML = '0'
-    }
+    setInterval(() => {
+        updateStatus();
+    }, 15000);
 }
 
+
+/**
+ * Génère un UUID déterministe basé sur le pseudo
+ * Utilise exactement la même méthode que Java UUID.nameUUIDFromBytes()
+ * Format: OfflinePlayer:<username>
+ */
+function generateDeterministicUUID(username) {
+    const crypto = require('crypto');
+    
+    // Utilise MD5 avec le préfixe "OfflinePlayer:" comme Java
+    const data = Buffer.from('OfflinePlayer:' + username, 'utf8');
+    const hash = crypto.createHash('md5').update(data).digest();
+    
+    // Format en UUID v3 (même format que Java UUID.nameUUIDFromBytes)
+    hash[6] = (hash[6] & 0x0f) | 0x30; // Version 3
+    hash[8] = (hash[8] & 0x3f) | 0x80; // Variant
+    
+    // Convertir en string UUID
+    const hex = hash.toString('hex');
+    return [
+        hex.substring(0, 8),
+        hex.substring(8, 12),
+        hex.substring(12, 16),
+        hex.substring(16, 20),
+        hex.substring(20, 32)
+    ].join('-');
+}
 
 export {
     appdata as appdata,
@@ -127,5 +181,6 @@ export {
     accountSelect as accountSelect,
     slider as Slider,
     pkg as pkg,
-    setStatus as setStatus
+    setStatus as setStatus,
+    generateDeterministicUUID as generateDeterministicUUID
 }

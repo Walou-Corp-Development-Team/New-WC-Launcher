@@ -1,6 +1,6 @@
 /**
  * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
 const pkg = require('../package.json');
@@ -14,8 +14,8 @@ class Config {
     GetConfig() {
         return new Promise((resolve, reject) => {
             fetch(config).then(async config => {
-                if (config.status === 200) return resolve(config.json());
-                else return reject({ error: { code: config.statusText, message: 'Serveur innacessible' } });
+                if(config.status === 200) return resolve(config.json());
+                else return reject({ error: { code: config.statusText, message: 'Server not accessible' } });
             }).catch(error => {
                 return reject({ error });
             })
@@ -28,7 +28,7 @@ class Config {
         let instancesList = []
         instances = Object.entries(instances)
 
-        for (let [name, data] of instances) {
+        for(let [name, data] of instances) {
             let instance = data
             instance.name = name
             instancesList.push(instance)
@@ -38,17 +38,17 @@ class Config {
 
     async getNews() {
         let config = await this.GetConfig() || {}
-    
-        if (config.rss) {
+
+        if(config.rss) {
             return new Promise((resolve, reject) => {
                 fetch(config.rss).then(async config => {
-                    if (config.status === 200) {
+                    if(config.status === 200) {
                         let news = [];
                         let response = await config.text()
                         response = (JSON.parse(convert.xml2json(response, { compact: true })))?.rss?.channel?.item;
-    
-                        if (!Array.isArray(response)) response = [response];
-                        for (let item of response) {
+
+                        if(!Array.isArray(response)) response = [response];
+                        for(let item of response) {
                             news.push({
                                 title: item.title._text,
                                 content: item['content:encoded']._text,
@@ -58,14 +58,14 @@ class Config {
                         }
                         return resolve(news);
                     }
-                    else return reject({ error: { code: config.statusText, message: 'Serveur innacessible' } });
+                    else return reject({ error: { code: config.statusText, message: 'Server not accessible' } });
                 }).catch(error => reject({ error }))
             })
         } else {
             return new Promise((resolve, reject) => {
                 fetch(news).then(async config => {
-                    if (config.status === 200) return resolve(config.json());
-                    else return reject({ error: { code: config.statusText, message: 'Serveur innacessible' } });
+                    if(config.status === 200) return resolve(config.json());
+                    else return reject({ error: { code: config.statusText, message: 'Server not accessible' } });
                 }).catch(error => {
                     return reject({ error });
                 })

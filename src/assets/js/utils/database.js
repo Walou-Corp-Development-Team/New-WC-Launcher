@@ -1,6 +1,6 @@
 /**
  * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
 const { NodeBDD, DataType } = require('node-bdd');
@@ -38,7 +38,7 @@ class database {
     async readData(tableName, key = 1) {
         let table = await this.getDatabase(tableName);
         let data = await nodedatabase.getDataById(table, key)
-        if (data) {
+        if(data) {
             let id = data.id
             data = JSON.parse(data.json_data)
             data.ID = id

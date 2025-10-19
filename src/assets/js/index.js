@@ -1,6 +1,6 @@
 /**
  * @author Luuxis
- * Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
 const { ipcRenderer, shell } = require('electron');
@@ -17,14 +17,15 @@ class Splash {
         this.splashAuthor = document.querySelector(".splash-author");
         this.message = document.querySelector(".message");
         this.progress = document.querySelector(".progress");
+        this.version = document.querySelector(".version");
         document.addEventListener('DOMContentLoaded', async () => {
             let databaseLauncher = new database();
             let configClient = await databaseLauncher.readData('configClient');
             let theme = configClient?.launcher_config?.theme || "auto"
             let isDarkTheme = await ipcRenderer.invoke('is-dark-theme', theme).then(res => res)
             document.body.className = isDarkTheme ? 'dark global' : 'light global';
-            if (process.platform == 'win32') ipcRenderer.send('update-window-progress-load')
-            this.startAnimation()
+            if(process.platform === 'win32') ipcRenderer.send('update-window-progress-load')
+            await this.startAnimation()
         });
     }
 
@@ -46,20 +47,21 @@ class Splash {
         this.splashMessage.classList.add("opacity");
         this.splashAuthor.classList.add("opacity");
         this.message.classList.add("opacity");
+        this.version.classList.add("opacity");
         await sleep(1000);
-        this.checkUpdate();
+        await this.checkUpdate();
     }
 
     async checkUpdate() {
         this.setStatus(`Recherche de mise à jour...`);
 
         ipcRenderer.invoke('update-app').then().catch(err => {
-            return this.shutdown(`Erreur lors de la recherche de mise à jour :<br>${err.message}`);
+            return this.shutdown(`Erreur lors de la recherche de mise à jour : <br>${err.message}`);
         });
 
         ipcRenderer.on('updateAvailable', () => {
             this.setStatus(`Mise à jour disponible !`);
-            if (os.platform() == 'win32') {
+            if(os.platform() === 'win32') {
                 this.toggleProgress();
                 ipcRenderer.send('start-update');
             }
@@ -67,7 +69,7 @@ class Splash {
         })
 
         ipcRenderer.on('error', (event, err) => {
-            if (err) return this.shutdown(`${err.message}`);
+            if(err) return this.shutdown(`${err.message}`);
         })
 
         ipcRenderer.on('download-progress', (event, progress) => {
@@ -101,8 +103,8 @@ class Splash {
         const latestRelease = releases_url[0].assets;
         let latest;
 
-        if (os.platform() == 'darwin') latest = this.getLatestReleaseForOS('mac', '.dmg', latestRelease);
-        else if (os == 'linux') latest = this.getLatestReleaseForOS('linux', '.appimage', latestRelease);
+        if(os.platform() === 'darwin') latest = this.getLatestReleaseForOS('mac', '.dmg', latestRelease);
+        else if(os === 'linux') latest = this.getLatestReleaseForOS('linux', '.appimage', latestRelease);
 
 
         this.setStatus(`Mise à jour disponible !<br><div class="download-update">Télécharger</div>`);
@@ -134,7 +136,7 @@ class Splash {
         let i = 4;
         setInterval(() => {
             this.setStatus(`${text}<br>Arrêt dans ${i--}s`);
-            if (i < 0) ipcRenderer.send('update-window-close');
+            if(i < 0) ipcRenderer.send('update-window-close');
         }, 1000);
     }
 
@@ -143,7 +145,7 @@ class Splash {
     }
 
     toggleProgress() {
-        if (this.progress.classList.toggle("show")) this.setProgress(0, 1);
+        if(this.progress.classList.toggle("show")) this.setProgress(0, 1);
     }
 
     setProgress(value, max) {
@@ -152,13 +154,20 @@ class Splash {
     }
 }
 
+window.addEventListener('DOMContentLoaded', () => {
+    ipcRenderer.on('app-version', (event, version) => {
+        document.querySelector('.version').innerText = `Version : ${version}`;
+    });
+});
+
 function sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.code == 73 || e.code == 123) {
+    if (e.ctrlKey && e.shiftKey && e.code === 73 || e.code === 123) {
         ipcRenderer.send("update-window-dev-tools");
     }
 })
+
 new Splash();

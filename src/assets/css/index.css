@@ -3,7 +3,7 @@
 
 body {
     background-color: var(--background);
-    font-family: "Basement";
+    font-family: "Poppins";
     letter-spacing: 0px;
 }
 
@@ -114,6 +114,26 @@ img {
 }
 
 .show {
+    opacity: 1;
+}
+
+.version {
+    position: fixed;
+    bottom: 7px;
+    right: 18px;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--shadow);
+    background-color: var(--color);
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: opacity .5s;
+    opacity: 0;
+}
+
+.version.opacity {
     opacity: 1;
 }
 

@@ -1,97 +1,119 @@
 /**
-* @author Luuxis
-* Luuxis License v1.0 (voir fichier LICENSE pour les détails en FR/EN)
-*/
+ * @author Luuxis
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
+ */
+
 import { config, database, logger, changePanel, appdata, setStatus, pkg, popup } from '../utils.js'
+
+//const crypto = require('crypto');
 
 const { Launch } = require('minecraft-java-core')
 const { shell, ipcRenderer } = require('electron')
- 
+
 class Home {
-     static id = "home";
-     async init(config) {
-         this.config = config;
-         this.db = new database();
-         this.news()
-         this.socialLick()
-         this.instancesSelect()
-         document.querySelector('.settings-btn').addEventListener('click', e => changePanel('settings'))
-     }
- 
-     async news() {
-         let newsElement = document.querySelector('.news-list');
-         let news = await config.getNews().then(res => res).catch(err => err);
- 
-         if (news) {
-             if (!news.length) {
-                 let blockNews = document.createElement('div');
-                 blockNews.classList.add('news-block');
-                 blockNews.innerHTML = `
-                     <div class="news-header">
-                         <img class="server-status-icon" src="assets/images/icon.png">
-                         <div class="header-text">
-                             <div class="title">Aucun news n'est actuellement disponible.</div>
-                         </div>
-                         <div class="date">
-                             <div class="day">1</div>
-                             <div class="month">Janvier</div>
-                         </div>
-                     </div>
-                     <div class="news-content">
-                         <div class="bbWrapper">
-                             <p>Vous pourrez suivre ici toutes les news relatives au serveur.</p>
-                         </div>
-                     </div>`
-                 newsElement.appendChild(blockNews);
-             } else {
-                 for (let News of news) {
-                     let date = this.getdate(News.publish_date)
-                     let blockNews = document.createElement('div');
-                     blockNews.classList.add('news-block');
-                     blockNews.innerHTML = `
-                         <div class="news-header">
-                             <img class="server-status-icon" src="assets/images/icon.png">
-                             <div class="header-text">
-                                 <div class="title">${News.title}</div>
-                             </div>
-                             <div class="date">
-                                 <div class="day">${date.day}</div>
-                                 <div class="month">${date.month} ${date.year}</div>
-                             </div>
-                         </div>
-                         <div class="news-content">
-                             <div class="bbWrapper">
-                                 <p>${News.content.replace(/\n/g, '</br>')}</p>
-                                 <p class="news-author">Auteur - <span>${News.author}</span></p>
-                             </div>
-                         </div>`
-                     newsElement.appendChild(blockNews);
-                 }
-             }
-         } else {
-             let blockNews = document.createElement('div');
-             blockNews.classList.add('news-block');
-             blockNews.innerHTML = `
-                 <div class="news-header">
-                         <img class="server-status-icon" src="assets/images/icon.png">
-                         <div class="header-text">
-                             <div class="title">Error.</div>
-                         </div>
-                         <div class="date">
-                             <div class="day">1</div>
-                             <div class="month">Janvier</div>
-                         </div>
-                     </div>
-                     <div class="news-content">
-                         <div class="bbWrapper">
-                             <p>Impossible de contacter le serveur des news.</br>Merci de vérifier votre configuration.</p>
-                         </div>
-                     </div>`
-             newsElement.appendChild(blockNews);
-         }
-     }
- 
-     socialLick() {
+    static id = "home";
+
+    async init(config) {
+        this.config = config;
+        this.db = new database();
+        await this.news();
+        this.socialLick();
+        await this.instancesSelect();
+        await this.displayUsername();
+        this.startUsernameUpdateInterval();
+        this.settingsButton();
+    }
+
+    startUsernameUpdateInterval() {
+        this.usernameUpdateInterval = setInterval(async () => {
+            await this.displayUsername();
+        }, 100);
+    }
+
+    async displayUsername() {
+        let configClient = await this.db.readData('configClient');
+        let auth = await this.db.readData('accounts', configClient.account_selected);
+
+        if(auth && auth.name) {
+            document.querySelector('.username-display').textContent = auth.name;
+        } else {
+            document.querySelector('.username-display').textContent = "";
+        }
+    }
+
+    async news() {
+        let newsElement = document.querySelector('.news-list');
+        let news = await config.getNews().then(res => res).catch(err => false);
+        if(news) {
+            if(!news.length) {
+                let blockNews = document.createElement('div');
+                blockNews.classList.add('news-block');
+                blockNews.innerHTML = `
+                    <div class="news-header">
+                        <img class="server-status-icon" src="assets/images/icon.png">
+                        <div class="header-text">
+                            <div class="title">Aucune news n'est actuellement disponible.</div>
+                        </div>
+                        <div class="date">
+                            <div class="day">1</div>
+                            <div class="month">Janvier</div>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <div class="bbWrapper">
+                            <p>Vous pourrez suivre ici toutes les news relatives au serveur.</p>
+                        </div>
+                    </div>`
+                newsElement.appendChild(blockNews);
+            } else {
+                for(let News of news) {
+                    let date = this.getdate(News.publish_date)
+                    let blockNews = document.createElement('div');
+                    blockNews.classList.add('news-block');
+                    blockNews.innerHTML = `
+                        <div class="news-header">
+                            <img class="server-status-icon" src="assets/images/icon.png">
+                            <div class="header-text">
+                                <div class="title">${News.title}</div>
+                            </div>
+                            <div class="date">
+                                <div class="day">${date.day}</div>
+                                <div class="month">${date.month}</div>
+                            </div>
+                        </div>
+                        <div class="news-content">
+                            <div class="bbWrapper">
+                                <p>${News.content.replace(/\n/g, '</br>')}</p>
+                                <p class="news-author">Auteur - <span>${News.author}</span></p>
+                            </div>
+                        </div>`
+                    newsElement.appendChild(blockNews);
+                }
+            }
+        } else {
+            let blockNews = document.createElement('div');
+            blockNews.classList.add('news-block');
+            blockNews.innerHTML = `
+                <div class="news-header">
+                        <img class="server-status-icon" src="assets/images/icon.png">
+                        <div class="header-text">
+                            <div class="title">Erreur</div>
+                        </div>
+                        <div class="date">
+                            <div class="day">1</div>
+                            <div class="month">Janvier</div>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <div class="bbWrapper">
+                            <p>Connexion impossible avec le serveur des news.</br>Merci de vérifier votre configuration.</p>
+                        </div>
+                    </div>`
+            newsElement.appendChild(blockNews);
+        }
+    }
+
+    socialLick() {
         let socials = document.querySelectorAll('.social-block')
 
         socials.forEach(social => {
@@ -105,32 +127,32 @@ class Home {
         let configClient = await this.db.readData('configClient')
         let auth = await this.db.readData('accounts', configClient.account_selected)
         let instancesList = await config.getInstanceList()
-        let instanceSelect = instancesList.find(i => i.name == configClient?.instance_selct) ? configClient?.instance_selct : null
+        let instanceSelect = instancesList.find(i => i.name === configClient?.instance_selct) ? configClient?.instance_selct : null
 
         let instanceBTN = document.querySelector('.play-instance')
         let instancePopup = document.querySelector('.instance-popup')
         let instancesListPopup = document.querySelector('.instances-List')
         let instanceCloseBTN = document.querySelector('.close-popup')
 
-        if (instancesList.length === 1) {
+        if(instancesList.length === 1) {
             document.querySelector('.instance-select').style.display = 'none'
             instanceBTN.style.paddingRight = '0'
         }
 
-        if (!instanceSelect) {
-            let newInstanceSelect = instancesList.find(i => i.whitelistActive == false)
+        if(!instanceSelect) {
+            let newInstanceSelect = instancesList.find(i => i.whitelistActive === false)
             let configClient = await this.db.readData('configClient')
             configClient.instance_selct = newInstanceSelect.name
             instanceSelect = newInstanceSelect.name
             await this.db.updateData('configClient', configClient)
         }
 
-        for (let instance of instancesList) {
-            if (instance.whitelistActive) {
-                let whitelist = instance.whitelist.find(whitelist => whitelist == auth?.name)
-                if (whitelist !== auth?.name) {
-                    if (instance.name == instanceSelect) {
-                        let newInstanceSelect = instancesList.find(i => i.whitelistActive == false)
+        for(let instance of instancesList) {
+            if(instance.whitelistActive) {
+                let whitelist = instance.whitelist.find(whitelist => whitelist === auth?.name)
+                if(whitelist !== auth?.name) {
+                    if(instance.name === instanceSelect) {
+                        let newInstanceSelect = instancesList.find(i => i.whitelistActive === false)
                         let configClient = await this.db.readData('configClient')
                         configClient.instance_selct = newInstanceSelect.name
                         instanceSelect = newInstanceSelect.name
@@ -139,25 +161,25 @@ class Home {
                     }
                 }
             } else console.log(`Initializing instance ${instance.name}...`)
-            if (instance.name == instanceSelect) setStatus(instance.status)
+            if(instance.name === instanceSelect) await setStatus(instance.status)
         }
 
         instancePopup.addEventListener('click', async e => {
             let configClient = await this.db.readData('configClient')
 
-            if (e.target.classList.contains('instance-elements')) {
+            if(e.target.classList.contains('instance-elements')) {
                 let newInstanceSelect = e.target.id
                 let activeInstanceSelect = document.querySelector('.active-instance')
 
-                if (activeInstanceSelect) activeInstanceSelect.classList.toggle('active-instance');
+                if(activeInstanceSelect) activeInstanceSelect.classList.toggle('active-instance');
                 e.target.classList.add('active-instance');
 
                 configClient.instance_selct = newInstanceSelect
                 await this.db.updateData('configClient', configClient)
-                instanceSelect = instancesList.filter(i => i.name == newInstanceSelect)
+                instanceSelect = instancesList.filter(i => i.name === newInstanceSelect)
                 instancePopup.style.display = 'none'
                 let instance = await config.getInstanceList()
-                let options = instance.find(i => i.name == configClient.instance_selct)
+                let options = instance.find(i => i.name === configClient.instance_selct)
                 await setStatus(options.status)
             }
         })
@@ -167,13 +189,13 @@ class Home {
             let instanceSelect = configClient.instance_selct
             let auth = await this.db.readData('accounts', configClient.account_selected)
 
-            if (e.target.classList.contains('instance-select')) {
+            if(e.target.classList.contains('instance-select')) {
                 instancesListPopup.innerHTML = ''
-                for (let instance of instancesList) {
-                    if (instance.whitelistActive) {
+                for(let instance of instancesList) {
+                    if(instance.whitelistActive) {
                         instance.whitelist.map(whitelist => {
-                            if (whitelist == auth?.name) {
-                                if (instance.name == instanceSelect) {
+                            if(whitelist === auth?.name) {
+                                if(instance.name === instanceSelect) {
                                     instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements active-instance">${instance.name}</div>`
                                 } else {
                                     instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements">${instance.name}</div>`
@@ -181,7 +203,7 @@ class Home {
                             }
                         })
                     } else {
-                        if (instance.name == instanceSelect) {
+                        if(instance.name === instanceSelect) {
                             instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements active-instance">${instance.name}</div>`
                         } else {
                             instancesListPopup.innerHTML += `<div id="${instance.name}" class="instance-elements">${instance.name}</div>`
@@ -192,7 +214,7 @@ class Home {
                 instancePopup.style.display = 'flex'
             }
 
-            if (!e.target.classList.contains('instance-select')) this.startGame()
+            if(!e.target.classList.contains('instance-select')) await this.startGame()
         })
 
         instanceCloseBTN.addEventListener('click', () => instancePopup.style.display = 'none')
@@ -203,7 +225,11 @@ class Home {
         let configClient = await this.db.readData('configClient')
         let instance = await config.getInstanceList()
         let authenticator = await this.db.readData('accounts', configClient.account_selected)
-        let options = instance.find(i => i.name == configClient.instance_selct)
+        let options = instance.find(i => i.name === configClient.instance_selct)
+
+        // Génération du token
+        /*let authKey = crypto.randomBytes(32).toString('hex');
+        await this.db.updateData('sessionAuth', { authKey });*/
 
         let playInstanceBTN = document.querySelector('.play-instance')
         let infoStartingBOX = document.querySelector('.info-starting-game')
@@ -233,6 +259,7 @@ class Home {
 
             java: {
                 path: configClient.java_config.java_path,
+                autoDownload: true,
             },
 
             JVM_ARGS:  options.jvm_args ? options.jvm_args : [],
@@ -249,12 +276,21 @@ class Home {
             }
         }
 
+            
+            /*jvmArgs: [
+                `-DauthKey=${authKey}`
+            ]*/
+            //JVM_ARGS: ["-DauthToken=g4Wa5R63(?9U3T^7ki:37!LwjJJmXP7]D[f+4}4SFmi-v9aB=6;8Xv%pa${B"]
+
         launch.Launch(opt);
+        //console.log("Arguments JVM envoyés :", opt.JVM_ARGS);
 
         playInstanceBTN.style.display = "none"
         infoStartingBOX.style.display = "block"
         progressBar.style.display = "";
         ipcRenderer.send('main-window-progress-load')
+
+        let lastSpeed = null;
 
         launch.on('extract', extract => {
             ipcRenderer.send('main-window-progress-load')
@@ -262,10 +298,19 @@ class Home {
         });
 
         launch.on('progress', (progress, size) => {
-            infoStarting.innerHTML = `Téléchargement ${((progress / size) * 100).toFixed(0)}%`
-            ipcRenderer.send('main-window-progress', { progress, size })
+            let progressPercent = ((progress / size) * 100).toFixed(0);
+            infoStarting.innerHTML = `Téléchargement ${progressPercent}%`;
+
+            if(lastSpeed !== null) {
+                infoStarting.innerHTML += ` ( ${lastSpeed} Mo/s )`;
+            }
+
             progressBar.value = progress;
             progressBar.max = size;
+
+            if(progressPercent == 100) {
+                lastSpeed = null;
+            }
         });
 
         launch.on('check', (progress, size) => {
@@ -280,33 +325,39 @@ class Home {
             let minutes = Math.floor((time - hours * 3600) / 60);
             let seconds = Math.floor(time - hours * 3600 - minutes * 60);
             console.log(`${hours}h ${minutes}m ${seconds}s`);
-        })
+        });
 
         launch.on('speed', (speed) => {
-            console.log(`${(speed / 1067008).toFixed(2)} Mb/s`)
-        })
+            if(speed) {
+                let speedInMo = (speed / 1024 / 1024).toFixed(2);
+
+                if(lastSpeed !== speedInMo) {
+                    lastSpeed = speedInMo;
+                }
+            }
+        });
 
         launch.on('patch', patch => {
             console.log(patch);
             ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Patch en cours...`
+            infoStarting.innerHTML = `Mise à jour en cours...`
         });
 
         launch.on('data', (e) => {
             progressBar.style.display = "none"
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
+            if(configClient.launcher_config.closeLauncher === 'close-launcher') {
                 ipcRenderer.send("main-window-hide")
-            };
+            }
             new logger('Minecraft', '#36b030');
             ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Demarrage en cours...`
+            infoStarting.innerHTML = `Lancement en cours...`
             console.log(e);
-        })
+        });
 
         launch.on('close', code => {
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
+            if(configClient.launcher_config.closeLauncher === 'close-launcher') {
                 ipcRenderer.send("main-window-show")
-            };
+            }
             ipcRenderer.send('main-window-progress-reset')
             infoStartingBOX.style.display = "none"
             playInstanceBTN.style.display = "flex"
@@ -325,9 +376,9 @@ class Home {
                 options: true
             })
 
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
+            if(configClient.launcher_config.closeLauncher === 'close-launcher') {
                 ipcRenderer.send("main-window-show")
-            };
+            }
             ipcRenderer.send('main-window-progress-reset')
             infoStartingBOX.style.display = "none"
             playInstanceBTN.style.display = "flex"
@@ -337,32 +388,28 @@ class Home {
         });
     }
 
-     getdate(e) {
-         if (!e) return { year: '', month: '', day: '' }
- 
-         let date = new Date(e)
- 
-         // Si le format n'est pas reconnu
-         if (isNaN(date.getTime())) {
-             // Essaye JJ/MM/AAAA ou JJ-MM-AAAA
-             let parts = e.split(/[\/\-]/)
-             if (parts.length === 3) {
-                 // suppose JJ/MM/AAAA
-                 let [d, m, y] = parts
-                 return { year: y, month: m, day: d }
-             }
-             return { year: '', month: '', day: e } // fallback brut
-         }
- 
-         let year = date.getFullYear()
-         let month = date.getMonth() + 1
-         let day = date.getDate()
-         let allMonth = [
-             'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-             'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
-         ]
-         return { year: year, month: allMonth[month - 1], day: day }
-     }
- }
- export default Home;
- 
+    settingsButton() {
+        document.querySelector('.settings-btn').addEventListener('click', e => {
+            const activeSettingsBTN = document.querySelector('.active-settings-BTN');
+            if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN');
+            document.querySelector('#account').classList.add('active-settings-BTN');
+
+            const activeContainerSettings = document.querySelector('.active-container-settings');
+            if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
+            document.querySelector('#account-tab').classList.add('active-container-settings');
+
+            changePanel('settings');
+        });
+    }
+
+    getdate(e) {
+        let date = new Date(e)
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        let allMonth = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+        return { year: year, month: allMonth[month - 1], day: day }
+    }
+}
+
+export default Home;

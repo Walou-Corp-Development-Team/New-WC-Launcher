@@ -1,18 +1,18 @@
 {
-    "name": "wc_launcher_new",
+    "name": "waloucorp_launcher",
     "preductname": "WalouCorp Launcher",
-    "version": "1.0.31",
-    "description": "Launcher Minecraft de la Walou Corp",
+    "version": "2.0.0",
+    "description": "Launcher Minecraft pour le serveur Minecraft Cobblemon Night-Watch",
     "main": "src/app.js",
     "author": {
-        "name": "luuxis, WalouCorp, Inc.",
-        "email": "contact@luuxis.fr",
-        "url": "https://github.com/luuxis"
+        "name": "Luuxis, WalouCorp Development Team",
+        "email": "contact@walou.corp",
+        "url": "https://github.com/Walou-Corp-Development-Team"
     },
     "url": "http://play.night-watch.fr",
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
-        "dev": "cross-env-shell DEV_TOOL=open nodemon --exec npm start",
+        "dev": "cross-env-shell DEV_TOOL=open nodemon --exec bun start",
         "build": "node build.js --obf=true --build=platform",
         "icon": "node build.js --icon=https://raw.githubusercontent.com/Walou41/Icone/refs/heads/main/Logo%20WC.png"
     },

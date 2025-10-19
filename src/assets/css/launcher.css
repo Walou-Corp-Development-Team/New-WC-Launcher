@@ -5,13 +5,17 @@
 @import 'panels/settings.css';
 
 body {
-    zoom: 80%;
     margin: 0;
     padding: 0;
     user-select: none;
-    color: var(--color);
-    font-family: 'Basement';
-    font-weight: bolder;
+    color: var(--dark);
+    font-family: var(--roboto-font);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+h1, h2, h3, h5, h6 {
+    font-family: var(--batman-font);
 }
 
 img {
@@ -149,17 +153,20 @@ input::-webkit-inner-spin-button {
 }
 
 .popup-tab {
-    width: 40%;
+    width: 50%;
+    background: var(--background-light);
     padding: 15px;
-    background: var(--background);
-    border-radius: 15px;
+    border-radius: 6px;
     z-index: 10;
 }
 
 .popup-title {
     text-align: center;
+    background: var(--background-transparent);
+    padding: 10px;
     font-size: 2rem;
-    border-bottom: solid 4px var(--color);
+    border-radius: 5px;
+    border: solid 3px var(--background-element);
     margin-bottom: 1rem;
 }
 
@@ -181,7 +188,7 @@ input::-webkit-inner-spin-button {
 }
 
 .panel {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     opacity: 0;

@@ -45,7 +45,7 @@ class Index {
                 if (this.obf) {
                     await new Promise((resolve) => {
                         console.log(`Obfuscate ${path}`);
-                        let obf = JavaScriptObfuscator.obfuscate(code, { optionsPreset: 'medium-obfuscation', disableConsoleOutput: false });
+                        let obf = JavaScriptObfuscator.obfuscate(code, { optionsPreset: 'high-obfuscation', disableConsoleOutput: false });
                         resolve(fs.writeFileSync(`${folder}/${fileName}`, obf.getObfuscatedCode(), { encoding: "utf-8" }));
                     })
                 } else {
@@ -65,7 +65,7 @@ class Index {
                 generateUpdatesFilesForAllChannels: false,
                 appId: preductname,
                 productName: preductname,
-                copyright: 'Copyright © 2020-2024 Luuxis',
+                copyright: 'Copyright © 2020-2025 Luuxis x WalouCorp',
                 artifactName: "${productName}-${os}-${arch}.${ext}",
                 extraMetadata: { main: 'app/app.js' },
                 files: ["app/**/*", "package.json", "LICENSE.md"],
@@ -132,9 +132,9 @@ class Index {
                 }
             }
         }).then(() => {
-            console.log('le build est terminé')
+            console.log('Build successful !')
         }).catch(err => {
-            console.error('Error during build!', err)
+            console.error('Build Aborted !', err)
         })
     }
 

@@ -1,24 +1,54 @@
 .global {
-    --element-color: #ff6a2f8a;
+    --element-color: #ff9900bb;
     --transition: all 0.5s cubic-bezier(1, 0.46, 0, 1.29);
     --dark-color: #292929;
-    --light-color: rgb(245, 245, 245);
+    --light-color: #f5f5f5;
 }
 
 .dark {
     --color: #F5F5F5;
     --background: #292929;
-    --background-element: #424242;
-    --background-transparent: #2c2c2c8a;
-    --shadow: rgba(25, 25, 25, 0.7);
+    --background-element: #111111;
+    --background-transparent: #111111cc;
+    --shadow: #191919b3;
     --svg-color: brightness(0) saturate(100%) invert(100%) sepia(55%) saturate(23%) hue-rotate(236deg) brightness(108%) contrast(92%);
+
+
+    --really-light: #000000;
+    --light: #111111;
+    --dark: #ececec;
+    --really-dark: #ffffff;
+
+    --contour-status: transparent;
+
+    --background-login-tab: #1e1e1ecc;
+
+    --background-light: rgba(17, 17, 17, 1);
+    --background-dark: rgba(236, 236, 236, 0.6);
+    --background-player-count: rgba(47, 47, 47, 0.7);
+    --background-sidebar: rgba(17, 17, 17, 0.95);
 }
 
 .light {
     --color: #151515;
-    --background: rgb(245, 245, 245);
+    --background: #f5f5f5;
     --background-element: #c2c2c2;
-    --background-transparent: #cccccc8a;
-    --shadow: rgba(208, 208, 208, 0.7);
+    --background-transparent: #cccccccc;
+    --shadow: #d0d0d0b3;
     --svg-color: brightness(0) saturate(100%) invert(0%) sepia(5%) saturate(1719%) hue-rotate(357deg) brightness(94%) contrast(84%);
+
+
+    --really-light: #ffffff;
+    --light: #ececec;
+    --dark: #111111;
+    --really-dark: #000000;
+
+    --contour-status: #ffffff;
+
+    --background-login-tab: #ecececcc;
+
+    --background-light: #ececec99;
+    --background-dark: #11111199;
+    --background-player-count: #d0d0d0b3;
+    --background-sidebar: #ecececcc;
 }
