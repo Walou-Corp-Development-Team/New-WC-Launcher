@@ -1,7 +1,7 @@
 {
     "name": "waloucorp_launcher",
     "preductname": "WalouCorp Launcher",
-    "version": "2.0.0",
+    "version": "2.0.9",
     "description": "Launcher Minecraft pour le serveur Minecraft Cobblemon Night-Watch",
     "main": "src/app.js",
     "author": {
@@ -14,7 +14,8 @@
         "start": "cross-env-shell NODE_ENV=dev electron .",
         "dev": "cross-env-shell DEV_TOOL=open nodemon --exec bun start",
         "build": "node build.js --obf=true --build=platform",
-        "icon": "node build.js --icon=https://raw.githubusercontent.com/Walou41/Icone/refs/heads/main/Logo%20WC.png"
+        "icon": "node build.js --icon=https://raw.githubusercontent.com/Walou41/Icone/refs/heads/main/Logo%20WC.png",
+        "format": "prettier --write src"
     },
     "license": "CCANC",
     "nodemonConfig": {
@@ -26,6 +27,7 @@
         "minecraft-java-core": "^4.2.1",
         "node-bdd": "^2.0.4",
         "node-fetch": "^3.3.2",
+        "prettier": "^3.6.2",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {

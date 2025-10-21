@@ -1,171 +1,206 @@
 <div class="container">
-    <div class="nav-settings">
-        <p>Paramètres</p>
-        <div class="nav-box">
-            <div id="account" class="nav-settings-btn active-settings-BTN">
-                <div class="icon-account icon"></div>
-                <div class="text">Comptes</div>
-            </div>
-            <div id="java" class="nav-settings-btn">
-                <div class="icon-java icon"></div>
-                <div class="text">Java</div>
-            </div>
-            <div id="resolution" class="nav-settings-btn">
-                <div class="icon-resolution icon"></div>
-                <div class="text">Résolution</div>
-            </div>
-            <div id="launcher" class="nav-settings-btn">
-                <div class="icon-launcher icon"></div>
-                <div class="text">Launcher</div>
-            </div>
-            <div id="save" class="nav-settings-btn">
-                <div class="icon-save icon"></div>
-                <div class="text">Sauvegarder</div>
-            </div>
-        </div>
-    </div>
+	<div class="nav-settings">
+		<p>Paramètres</p>
+		<div class="nav-box">
+			<div id="account" class="nav-settings-btn active-settings-BTN">
+				<div class="icon-account icon"></div>
+				<div class="text">Comptes</div>
+			</div>
+			<div id="java" class="nav-settings-btn">
+				<div class="icon-java icon"></div>
+				<div class="text">Java</div>
+			</div>
+			<div id="resolution" class="nav-settings-btn">
+				<div class="icon-resolution icon"></div>
+				<div class="text">Résolution</div>
+			</div>
+			<div id="launcher" class="nav-settings-btn">
+				<div class="icon-launcher icon"></div>
+				<div class="text">Launcher</div>
+			</div>
+			<div id="save" class="nav-settings-btn">
+				<div class="icon-save icon"></div>
+				<div class="text">Sauvegarder</div>
+			</div>
+		</div>
+	</div>
 
-    <div id="account-tab" class="container-settings active-container-settings">
-        <div class="titre-tab">Paramètres de comptes</div>
+	<div id="account-tab" class="container-settings active-container-settings">
+		<div class="titre-tab">Paramètres de comptes</div>
 
-        <div class="accounts-list content-scroll">
-            <div class="account" id="add">
-                <div class="add-profile">
-                    <div class="icon-account-add"></div>
-                </div>
-                <div class="add-text-profile">Ajouter un compte</div>
-            </div>
-        </div>
-    </div>
+		<div class="accounts-list content-scroll">
+			<div class="account" id="add">
+				<div class="add-profile">
+					<div class="icon-account-add"></div>
+				</div>
+				<div class="add-text-profile">Ajouter un compte</div>
+			</div>
+		</div>
+	</div>
 
-    <div id="java-tab" class="container-settings content-scroll">
-        <div class="titre-tab">Paramètres de votre RAM</div>
-        <div class="settings-elements-box">
-            <div class="setting-text">
-                Définition de la RAM allouée à votre jeu. Une quantité plus important augmentera les performances de
-                votre jeu.<br>
-                À noter qu'il faut éviter de mettre une trop grande quantité sinon cela peut provoquer des pertes de
-                performances sur vos autres applications.<br><br>
-                <b>- RAM Maximale :</b> Quantité totale de RAM allouée. Il est recommandé de ne pas
-                dépasser 66.6% de la RAM présente sur votre PC.<br><br>
-                <b>- RAM Minimale :</b> Quantité minimale de RAM allouée. Il est
-                recommandé de ne pas mettre plus de 4 Go pour cette valeur.
-            </div>
-            <div class="settings-elements content-evenly">
-                <div class="memory-slider" min="0.5" max="8" step="0.5">
-                    <div class="slider-touch-left">
-                        <span value="0 Go"></span>
-                    </div>
-                    <div class="slider-touch-right">
-                        <span value="0 Go"></span>
-                    </div>
-                    <div class="slider-line">
-                        <span></span>
-                    </div>
-                </div>
-                <div class="ram-info-block">
-                    Vous possédez un total de <span id="total-ram">0 Go</span> RAM.<br>
-                    Vous possédez un total de <span id="free-ram">0 Go</span> RAM disponible.
-                </div>
-            </div>
-        </div>
+	<div id="java-tab" class="container-settings content-scroll">
+		<div class="titre-tab">Paramètres de votre RAM</div>
+		<div class="settings-elements-box">
+			<div class="setting-text">
+				Définition de la RAM allouée à votre jeu. Une quantité plus important
+				augmentera les performances de votre jeu.<br />
+				À noter qu'il faut éviter de mettre une trop grande quantité sinon cela
+				peut provoquer des pertes de performances sur vos autres
+				applications.<br /><br />
+				<b>- RAM Maximale :</b> Quantité totale de RAM allouée. Il est
+				recommandé de ne pas dépasser 66.6% de la RAM présente sur votre PC.<br /><br />
+				<b>- RAM Minimale :</b> Quantité minimale de RAM allouée. Il est
+				recommandé de ne pas mettre plus de 4 Go pour cette valeur.
+			</div>
+			<div class="settings-elements content-evenly">
+				<div class="memory-slider" min="0.5" max="8" step="0.5">
+					<div class="slider-touch-left">
+						<span value="0 Go"></span>
+					</div>
+					<div class="slider-touch-right">
+						<span value="0 Go"></span>
+					</div>
+					<div class="slider-line">
+						<span></span>
+					</div>
+				</div>
+				<div class="ram-info-block">
+					Vous possédez un total de <span id="total-ram">0 Go</span> RAM.<br />
+					Vous possédez un total de <span id="free-ram">0 Go</span> RAM
+					disponible.
+				</div>
+			</div>
+		</div>
 
-        <div class="titre-tab">Emplacement de Java</div>
-        <div class="settings-elements-box">
-            <div class="setting-text">
-                <b class="text-danger">ATTENTION: Cette option n'est pas recommandée si vous n'êtes pas un développeur !</b> <br> <br>
-                Le launcher utilise une version embarquée de Java JRE 21. Cette version est disponible dans le répertoire :<br><span class="java-path-txt"></span><br>
-                Toutefois, vous pouvez spécifier votre propre exécutable si votre jeu requiert une version de Java plus récente. <br> <br>
-                La version optimale pour notre serveur 1.21.1 est JRE 21, une version antérieure ou ultérieure peut provoquer des instabilités !
-            </div>
-            <div class="settings-elements content-evenly">
-                <input type="text" class="java-path-input-text" disabled>
-                <input type="file" class="java-path-input-file" accept="application/octet-stream" />
-                <div class="java-path-box">
-                    <div class="java-path-set java-path-btn">Changer</div>
-                    <div class="java-path-reset java-path-btn">Par défaut</div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="titre-tab">Emplacement de Java</div>
+		<div class="settings-elements-box">
+			<div class="setting-text">
+				<b class="text-danger"
+					>ATTENTION: Cette option n'est pas recommandée si vous n'êtes pas un
+					développeur !</b
+				>
+				<br />
+				<br />
+				Le launcher utilise une version embarquée de Java JRE 21. Cette version
+				est disponible dans le répertoire :<br /><span
+					class="java-path-txt"
+				></span
+				><br />
+				Toutefois, vous pouvez spécifier votre propre exécutable si votre jeu
+				requiert une version de Java plus récente. <br />
+				<br />
+				La version optimale pour notre serveur 1.21.1 est JRE 21, une version
+				antérieure ou ultérieure peut provoquer des instabilités !
+			</div>
+			<div class="settings-elements content-evenly">
+				<input type="text" class="java-path-input-text" disabled />
+				<input
+					type="file"
+					class="java-path-input-file"
+					accept="application/octet-stream"
+				/>
+				<div class="java-path-box">
+					<div class="java-path-set java-path-btn">Changer</div>
+					<div class="java-path-reset java-path-btn">Par défaut</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div id="resolution-tab" class="container-settings">
-        <div class="titre-tab">Paramètres de résolution</div>
-        <div class="settings-elements-box">
-            <div class="setting-text">
-                Définissez une résolution personnalisée afin d'avoir un jeu adapté à votre écran. Par défaut, le jeu démarre <br>
-                en 1920 X 1080, vous pouvez modifier cette valeur pour un confort de jeu optimal. <br><br>
-                La résolution idéale (hors plein écran) est de 1920 X 1080 (Full HD). <br>
-                <b class="text-danger">Une résolution trop haute (exemple: 4K) peut impacter votre carte graphique !</b>
-            </div>
-            <div class="settings-elements content-center">
-                <div class="input-size-element">
-                    <input type="number" class="width-size input-resolution">
-                    <div class="size-cross"></div>
-                    <input type="number" class="height-size input-resolution">
-                </div>
-                <div class="size-reset size-btn">Par défaut</div>
-            </div>
-        </div>
-    </div>
+	<div id="resolution-tab" class="container-settings">
+		<div class="titre-tab">Paramètres de résolution</div>
+		<div class="settings-elements-box">
+			<div class="setting-text">
+				Définissez une résolution personnalisée afin d'avoir un jeu adapté à
+				votre écran. Par défaut, le jeu démarre <br />
+				en 1920 X 1080, vous pouvez modifier cette valeur pour un confort de jeu
+				optimal. <br /><br />
+				La résolution idéale (hors plein écran) est de 1920 X 1080 (Full HD).
+				<br />
+				<b class="text-danger"
+					>Une résolution trop haute (exemple: 4K) peut impacter votre carte
+					graphique !</b
+				>
+			</div>
+			<div class="settings-elements content-center">
+				<div class="input-size-element">
+					<input type="number" class="width-size input-resolution" />
+					<div class="size-cross"></div>
+					<input type="number" class="height-size input-resolution" />
+				</div>
+				<div class="size-reset size-btn">Par défaut</div>
+			</div>
+		</div>
+	</div>
 
-    <div id="launcher-tab" class="container-settings content-scroll">
-        <div class="titre-tab">Paramètres de téléchargement</div>
-        <div class="settings-elements-box">
-            <div class="setting-text">
-                Détermine le nombre de fichiers pouvant être téléchargés simultanément lors de la
-                mise à jour ou du téléchargement des ressources.<br><br>
+	<div id="launcher-tab" class="container-settings content-scroll">
+		<div class="titre-tab">Paramètres de téléchargement</div>
+		<div class="settings-elements-box">
+			<div class="setting-text">
+				Détermine le nombre de fichiers pouvant être téléchargés simultanément
+				lors de la mise à jour ou du téléchargement des ressources.<br /><br />
 
-                Veuillez noter que la modification de ce paramètre peut affecter les performances de
-                téléchargement.<br>
-                <b class="text-danger">Il est recommandé de ne pas dépasser les limites recommandées par défaut,<br>
-                sauf si vous rencontrez des problèmes spécifiques de connectivité.</b>
-            </div>
-            <div class="settings-elements content-center">
-                <input type="number" class="max-files input-max-files">
-                <p>Fichiers</p>
-                <div class="max-files-reset max-files-btn">Par défaut</div>
-            </div>
-        </div>
+				Veuillez noter que la modification de ce paramètre peut affecter les
+				performances de téléchargement.<br />
+				<b class="text-danger"
+					>Il est recommandé de ne pas dépasser les limites recommandées par
+					défaut,<br />
+					sauf si vous rencontrez des problèmes spécifiques de connectivité.</b
+				>
+			</div>
+			<div class="settings-elements content-center">
+				<input type="number" class="max-files input-max-files" />
+				<p>Fichiers</p>
+				<div class="max-files-reset max-files-btn">Par défaut</div>
+			</div>
+		</div>
 
-        <div class="titre-tab" style="display:none;">Paramètres du thème</div>
-        <div class="settings-elements-box" style="display:none;">
-            <div class="setting-text">
-                Choisissez entre le thème clair et le thème sombre pour personnaliser l'apparence du launcher.<br><br>
+		<div class="titre-tab" style="display: none">Paramètres du thème</div>
+		<div class="settings-elements-box" style="display: none">
+			<div class="setting-text">
+				Choisissez entre le thème clair et le thème sombre pour personnaliser
+				l'apparence du launcher.<br /><br />
 
-                La modification du thème peut influencer la lisibilité et l'expérience visuelle.<br>
-                Sélectionnez celui qui vous convient le mieux en fonction de vos préférences.
-            </div>
-            <div class="settings-elements content-center theme-box">
-                <div class="theme-btn theme-btn-clair">
-                    <div class="icon-light-theme icon"></div>
-                    <div class="text">Clair</div>
-                </div>
-                <div class="theme-btn theme-btn-sombre">
-                    <div class="icon-dark-theme icon"></div>
-                    <div class="text">Sombre</div>
-                </div>
-                <div class="theme-btn theme-btn-auto">
-                    <div class="icon-auto-theme icon"></div>
-                    <div class="text">Auto</div>
-                </div>
-            </div>
-        </div>
+				La modification du thème peut influencer la lisibilité et l'expérience
+				visuelle.<br />
+				Sélectionnez celui qui vous convient le mieux en fonction de vos
+				préférences.
+			</div>
+			<div class="settings-elements content-center theme-box">
+				<div class="theme-btn theme-btn-clair">
+					<div class="icon-light-theme icon"></div>
+					<div class="text">Clair</div>
+				</div>
+				<div class="theme-btn theme-btn-sombre">
+					<div class="icon-dark-theme icon"></div>
+					<div class="text">Sombre</div>
+				</div>
+				<div class="theme-btn theme-btn-auto">
+					<div class="icon-auto-theme icon"></div>
+					<div class="text">Auto</div>
+				</div>
+			</div>
+		</div>
 
-        <div class="titre-tab">Comportement du launcher au démarrage</div>
-        <div class="settings-elements-box">
-            <div class="setting-text">
-                Vous pouvez choisir si le launcher se ferme automatiquement ou reste ouvert lorsque vous lancez le jeu.
-            </div>
+		<div class="titre-tab">Comportement du launcher au démarrage</div>
+		<div class="settings-elements-box">
+			<div class="setting-text">
+				Vous pouvez choisir si le launcher se ferme automatiquement ou reste
+				ouvert lorsque vous lancez le jeu.
+			</div>
 
-            <div class="settings-elements content-evenly close-box">
-                <div class="close-launcher close-btn">Fermer le launcher après le démarrage du jeu</div>
-                <div class="close-none close-btn">Garder le launcher ouvert</div>
-                <div class="close-all close-btn">Fermer le jeu si le launcher est fermé</div>
-            </div>
-        </div>
+			<div class="settings-elements content-evenly close-box">
+				<div class="close-launcher close-btn">
+					Fermer le launcher après le démarrage du jeu
+				</div>
+				<div class="close-none close-btn">Garder le launcher ouvert</div>
+				<div class="close-all close-btn">
+					Fermer le jeu si le launcher est fermé
+				</div>
+			</div>
+		</div>
 
-        <!-- <div class="titre-tab">Environnement INTEL</div>
+		<!-- <div class="titre-tab">Environnement INTEL</div>
         <div class="settings-elements-box">
             <div class="setting-text">
                 pour les jouer avec les proseceurs apple silicon 
@@ -176,5 +211,5 @@
                 <div class="close-none close-btn">Environnement SILICON</div>
             </div>
         </div> -->
-    </div>
+	</div>
 </div>

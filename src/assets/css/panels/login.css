@@ -1,88 +1,91 @@
 .login .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	height: 100%;
 
-    visibility: hidden;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: transform 0.4s ease-in-out, opacity 0.6s ease-in-out;
+	visibility: hidden;
+	opacity: 0;
+	transform: scale(0.95);
+	transition:
+		transform 0.4s ease-in-out,
+		opacity 0.6s ease-in-out;
 }
 
 .login.active .container {
-    visibility: visible;
-    opacity: 1;
-    transform: scale(1);
+	visibility: visible;
+	opacity: 1;
+	transform: scale(1);
 }
 
 .login-options {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
 }
 
 .login-new-tab {
-    font-weight: 900;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    padding: 0.7rem 1.5rem;
-    border-radius: 2rem;
-    background: var(--background-login-tab);
-    color: var(--dark);
-    text-shadow: 1px 1px 0px var(--light),
-                -1px -1px 0px var(--light),
-                1px -1px 0px var(--light),
-                -1px 1px 0px var(--light);
+	font-weight: 900;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+	padding: 0.7rem 1.5rem;
+	border-radius: 2rem;
+	background: var(--background-login-tab);
+	color: var(--dark);
+	text-shadow:
+		1px 1px 0px var(--light),
+		-1px -1px 0px var(--light),
+		1px -1px 0px var(--light),
+		-1px 1px 0px var(--light);
 }
 
 .login-tabs {
-    position: absolute;
-    padding: 15px;
-    background: var(--background-transparent);
-    border: 1px solid var(--element-color);
-    box-shadow: 0px 0px 81px 5px var(--element-color);
-    border-radius: 30px;
-    text-align: center;
-    min-width: 40%;
+	position: absolute;
+	padding: 15px;
+	background: var(--background-transparent);
+	border: 1px solid var(--element-color);
+	box-shadow: 0px 0px 81px 5px var(--element-color);
+	border-radius: 30px;
+	text-align: center;
+	min-width: 40%;
 }
 
 .login-home,
 .login-offline,
 .login-AZauth,
 .login-AZauth-A2F {
-    display: none;
+	display: none;
 }
 
 .login-text {
-    font-size: 1rem;
+	font-size: 1rem;
 }
 
 .connect,
 .cancel {
-    background: none;
-    color: var(--color);
-    border: solid 4px var(--element-color);
-    border-radius: 10px;
-    padding: 0.3rem 4rem;
-    font-size: inherit;
-    font-weight: bold;
-    margin: 15px 10px;
+	background: none;
+	color: var(--color);
+	border: solid 4px var(--element-color);
+	border-radius: 10px;
+	padding: 0.3rem 4rem;
+	font-size: inherit;
+	font-weight: bold;
+	margin: 15px 10px;
 }
 
 .input-login .email,
 .input-login .password,
 .A2F {
-    color: var(--color);
-    background: none;
-    border: solid 1px var(--dark);
-    border-radius: 7px;
-    width: 50%;
-    padding: 0.4rem 1rem;
-    margin-top: 10px;
+	color: var(--color);
+	background: none;
+	border: solid 1px var(--dark);
+	border-radius: 7px;
+	width: 50%;
+	padding: 0.4rem 1rem;
+	margin-top: 10px;
 }
 
 .connect-home,
@@ -90,17 +93,19 @@
 .connect-crack-mode,
 .cancel-home,
 .cancel-crack-mode {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--background-login-tab);
-    border: 1px solid var(--dark);
-    color: var(--dark);
-    padding: 5px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 30px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--background-login-tab);
+	border: 1px solid var(--dark);
+	color: var(--dark);
+	padding: 5px 15px;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 30px;
+	transition:
+		background-color 0.3s ease,
+		transform 0.3s ease;
 }
 
 .connect-home .icon,
@@ -108,10 +113,10 @@
 .connect-crack-mode .icon,
 .cancel-home .icon,
 .cancel-crack-mode .icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 8px;
-    vertical-align: middle;
+	width: 24px;
+	height: 24px;
+	margin-right: 8px;
+	vertical-align: middle;
 }
 
 .connect-home span,
@@ -119,14 +124,14 @@
 .connect-crack-mode span,
 .cancel-home span,
 .cancel-crack-mode span {
-    display: inline-flex;
-    align-items: center;
-    margin: 0;
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
 }
 
 .cancel-home span {
-    position: relative;
-    top: 2px;
+	position: relative;
+	top: 2px;
 }
 
 .connect-home:hover,
@@ -134,22 +139,22 @@
 .connect-crack-mode:hover,
 .cancel-home:hover,
 .cancel-crack-mode:hover {
-    transform: scale(1.05);
+	transform: scale(1.05);
 }
 
 /* Gestion des icônes selon le thème pour le bouton crack */
 .dark .icon-crack-light {
-    display: none !important;
+	display: none !important;
 }
 
 .dark .icon-crack-dark {
-    display: inline-block !important;
+	display: inline-block !important;
 }
 
 .light .icon-crack-dark {
-    display: none !important;
+	display: none !important;
 }
 
 .light .icon-crack-light {
-    display: inline-block !important;
+	display: inline-block !important;
 }
